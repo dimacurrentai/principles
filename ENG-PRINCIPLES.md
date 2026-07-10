@@ -211,3 +211,17 @@
 - **Applies at every scale.** From a trivial monitorable job to a large multi-component process, the rule is identical: the atomic-commit boundary is where an operation becomes visible, and it becomes visible whole or not at all. A multi-step, multi-service process is still exposed as a sequence of complete committed states — never as a glimpse of its own wiring mid-flight.
 
 - **Ties to §2's async ids.** The id §2 returns immediately for an async operation already denotes a job in its first state; handing back an id for a not-yet-initialized job would reintroduce exactly the limbo this section forbids. `wait`/`status` then observe a clean progression of complete states through to a terminal one.
+
+## 14. Publishing & Releases
+
+- **Merging the release PR IS the release: publishing runs in GitHub Actions, on merge to `main`.** For anything we publish (crates.io, PyPI, npm, …), a workflow on push to `main` performs the actual publish — never `cargo publish` from a laptop. The published artifact is built from the exact merged tree in a clean environment, and the release is auditable as a workflow run. This does not bend §3's "the gate NEVER publishes": the *gate* (pre-push, PR checks) still only dry-runs packaging, and the deliberate human act §3 demands is precisely the merge — the publish lives on the far side of it, on `main`, not inside any gate.
+
+- **Publish idempotently, in dependency order.** The workflow compares the workspace version against what the registry index serves and publishes only what the index lacks, dependencies first (for a multi-crate workspace: the leaf DTO crate, then what builds on it, then the binary). A merge without a version bump publishes nothing; a re-run after a partial failure finishes the remainder instead of choking on "already published."
+
+- **Authenticate via the registry's Trusted Publishing (OIDC), never long-lived tokens.** The workflow exchanges its GitHub identity for a short-lived registry token scoped to exactly the crates/packages it publishes. No secret to store, rotate, or leak (§8).
+
+- **Follow the community's release conventions: published version `X.Y.Z` gets tag `vX.Y.Z`.** The same workflow that publishes also creates the `vX.Y.Z` git tag and the GitHub release pointing at the release commit on `main`. Registry, tag, and release always name the same commit — one source of truth, per §13, for "what is version `X.Y.Z`."
+
+- **Gate the version ladder in CI, on the PR.** A required PR check verifies the version increased by *exactly one step* over the base branch — next patch, next minor, or next major, nothing else — and that the base branch agrees with what the registry serves (which catches a half-done publish loudly, before it compounds). No PR merges with a forgotten bump, a double bump, or a version the registry already has; §7's "breaking change bumps minor" is enforced here, not remembered.
+
+- **The version bump is its own commit — the LAST one in the PR.** The bump commit touches only the version manifests (`Cargo.toml` + `Cargo.lock` or equivalents), with a message like `Bump to 1.2.3.` (§6). Feature commits stay clean of release mechanics, the release is a one-commit revert if it ever must be, and with §6's linear history `main` reads unambiguously: work, work, bump — merge — release. The workflow's own definition — "merging a PR whose last commit bumps the version IS the release" — stays literally true in the history.
