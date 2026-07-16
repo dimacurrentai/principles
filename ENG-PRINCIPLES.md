@@ -126,6 +126,8 @@
 
 - **Keep PRs small and single-purpose.** The detailed policy is handled separately, but the principle stands: a PR should be reviewable in one sitting.
 
+- **Keep embedded multiline content readable in source.** When code embeds text that a reviewer is meant to read — an example file, configuration, request or response, Markdown document, query, script, or test fixture — represent it with the language's multiline literal or equivalent, preserving its line breaks and structure in the source. Do not flatten it into a single quoted line full of `\n` escapes and incidental quoting: reviewers should see substantially the same document the program sees. Prefer raw strings, heredocs, template literals, or the language's clearest equivalent when they reduce escaping. Use escape sequences when the exact control bytes are the point, or when the language offers no clearer form; even then, derive special encodings such as CRLF from a readable multiline fixture when practical.
+
 ## 7. Dependencies & Builds
 
 - **Lightweight, Linux-way dependencies are the way to go.** Reach for a well-established, small, single-purpose crate rather than reinventing it — the bar is quality and maintenance, not dependency count. Don't be shy, but stay lightweight.
