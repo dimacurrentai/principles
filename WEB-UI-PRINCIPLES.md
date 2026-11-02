@@ -99,3 +99,69 @@
 - **Unmodified single-key shortcuts stand down in every typing context.** Teach important shortcuts where their actions live, summarize them in one discoverable place, and show platform-appropriate Command/Control notation.
 
 - **Meaning NEVER depends on color alone.** Not every reader perceives color; pair it with shape, text, or position.
+
+## 9. Render from data, with explicit state lifetimes
+
+- **Derive every visible state from application data.** Keep selection, inspection targets, drafts, and current records in the model or explicit UI state; never read classes, ARIA attributes, or element existence back as application state. Use one rendering path for structure and focused paint functions for frequent feedback, both projecting the same data.
+
+- **Compute derivatives when needed.** Recompute affordability, highlights, and selection validity from current data instead of storing values that can go stale. Express whether an action is allowed as a predicate on that data, not a separately maintained flag.
+
+- **Give ephemeral state an owner and an end.** Clear selection, hover previews, focus targets, and drafts at every transition that invalidates them, in one place per transition. Persist unfinished drafts when recovery requires it (§7); their lifetime still ends explicitly when committed or discarded.
+
+- **Persist the model, then reconstruct the screen.** Restore saved actions, drafts, and deliberate view choices through the same rendering path used during normal operation.
+
+- **Attach asynchronous results to stable record identity.** Match replies to their record and revision; reject stale results and drop results for deleted records. Never update a list position captured before an asynchronous operation.
+
+## 10. Updates must remain visually consistent
+
+- **Rendering identical data twice produces identical pixels and preserves browser-owned state.** Prefer updates that preserve DOM identity (§2). When rebuilding is unavoidable, capture and restore inner scroll positions, keyboard focus, and open dialogs by stable data identity; keep a dialog open unless its subject no longer exists.
+
+- **Key interactive elements by data identity, never list position.** Restore the user's keyboard focus with `focus({ preventScroll: true })`, preserving focus-visible treatment without introducing mouse-triggered focus rings or scrolling.
+
+- **Paint frequent feedback in place.** Update selection counts, labels, badges, and `aria-pressed` on existing nodes; reserve structural rendering for transitions that require it.
+
+- **Keep reserved boxes when hiding their contents.** Use `visibility: hidden` when a disappearing score, badge, or travelling piece must retain its layout slot.
+
+- **Show a consistent stage throughout a transition.** Do not expose the final state before its pieces arrive or leave an obsolete state visible after the transition has advanced. Model staged views explicitly.
+
+- **Transient feedback expires and identifies its actor.** Time out highlights and mark only the records the relevant actor changed. Persistent warnings and errors follow §6 instead.
+
+- **Give each visual meaning its own component-scoped vocabulary.** Do not reuse a state class for unrelated components with different meanings.
+
+## 11. Bound dynamic content and isolate motion
+
+- **Reserve space for changing values.** Give counters, captions, scores, status lines, and badges stable columns or minimum sizes, tabular figures, and bounded rows. Truncate incidental text within its column; preserve navigable paths as required by §3.
+
+- **Growing content scrolls inside a bounded region.** Lists must not lengthen their row or widen their column. Use size containment where necessary to prevent content from determining the surrounding layout.
+
+- **Use `minmax(0, 1fr)` for flexible grid tracks containing variable content.** Give grid and flex children `min-width: 0` and `min-height: 0` so long content cannot push static regions off screen.
+
+- **Animate outside layout.** Use fixed-position overlay clones with `pointer-events: none` and transform/opacity animation. Cancel measured motion on resize or page hiding before its coordinates become stale.
+
+- **Float dialogs and previews above the layout.** Opening them never displaces the primary surface. Updates elsewhere preserve the user's panel scroll, inspection, and reading position.
+
+## 12. Plan space for each window shape
+
+- **Choose layouts by shape as well as width.** Consider orientation, aspect ratio, and height for wide landscape, short landscape, tablet, and portrait arrangements.
+
+- **Reseat the same components with named grid areas.** Keep one DOM and one state model across layouts instead of maintaining layout-specific copies.
+
+- **Give the primary surface flexible space and bound supporting panels.** Use flexible tracks for the main surface and bounded tracks such as `clamp()` for supporting regions.
+
+- **Size content from its container's tighter constraint.** Use container queries and `aspect-ratio` so content fits both available height and width without distorting its shape.
+
+- **For desktop workspaces, fit essential controls within one screen and scroll regions internally.** Use a `100dvh` shell; switch to natural page scrolling on phones. Document-style applications retain the top-to-bottom reading and scrolling model in §1.
+
+- **Remove decoration before function when space runs out.** Hide secondary captions or help text before controls or essential information; keep the help available through disclosure.
+
+- **Let CSS handle layout changes.** Resize may recompute or cancel measured transient visuals; it never changes application data.
+
+## 13. Make interruptions and verification part of the design
+
+- **Interrupt motion and replay cleanly.** A new interaction cancels the sequence and lands in a consistent state. Apply the same action-validity predicate to every control that can mutate state while work is busy.
+
+- **Reduced motion preserves behavior.** Skip flights and delays under `prefers-reduced-motion`; computation and state changes remain identical.
+
+- **Accessible state is the same state as visual state.** Write ARIA attributes, disabled states, and focusability from the same data in the same paint.
+
+- **Automate browser checks for silent regressions.** Cover several window shapes, horizontal overflow, motion and rapid interruption, selection isolation, draft cancellation, resize cleanup, modal preservation, undo, storage recovery, reduced motion, and console errors. Encode applicable principles in checks so later features cannot silently break them.
