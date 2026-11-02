@@ -8,7 +8,7 @@ Two, so far:
 
 - **[`ENG-PRINCIPLES.md`](ENG-PRINCIPLES.md)** — how we build: strong typing with one source-of-truth language, CLI ergonomics and machine output, testing and executable Markdown harnesses, docs, and more.
 
-- **[`WEB-UI-PRINCIPLES.md`](WEB-UI-PRINCIPLES.md)** — UI, UX, and data doctrine for web applications, document-style local apps in particular: local-first, offline-first, CRDT-first; stability; direct interaction; progressive disclosure; visible-data integrity; accessibility.
+- **[`WEB-UI-PRINCIPLES.md`](WEB-UI-PRINCIPLES.md)** — UI, UX, and data doctrine for web applications, document-style local apps in particular: local-first, offline-first, CRDT-first; stability; direct interaction; progressive disclosure; visible-data integrity; data-derived rendering; flicker-free updates; bounded dynamic content; responsive window shapes; accessibility and browser verification.
 
 ## How to use them
 
