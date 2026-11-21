@@ -291,6 +291,8 @@
 
   If the documents are right, the web UI and the MCP server are nearly free; if a new way in needs bespoke logic, the documents are missing something.
 
+- **A person at a terminal gets the board, not a second command language.** [`TUI-PRINCIPLES.md`](TUI-PRINCIPLES.md) is that screen: every operation reached with the arrow keys and Enter, a known value chosen by name, and an SSH session with a terminal and no command being the board itself. The documents in this section stay the contract a program sees.
+
 - **Web and MCP sign-in is approving a code over SSH.** Those ways in have no passwords; they borrow the SSH key's identity:
   - **One flow for both.** The page shows a short single-use code (`KQV-RMTA-ZPX`, ten uppercase letters, 10 minutes) and the exact command to run (`ssh … mcp login KQV-RMTA-ZPX`). The person runs it with their key, and the page continues by itself. For MCP this *is* the OAuth 2.1 authorization page (PKCE S256, dynamic client registration, RFC 9728/8414 metadata, `401` with `WWW-Authenticate` pointing at it), so standard MCP clients work unchanged.
   - **Who may connect is configuration** (e.g. `mcp.allowed` in the YAML), not something a session can grant itself. A connected client acts as the person who approved it, with exactly their grants, and the allowance and the person are re-checked on every call.

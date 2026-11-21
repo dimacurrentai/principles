@@ -4,11 +4,13 @@ Codified, repo-agnostic engineering doctrine. Each document is a living set of i
 
 ## The documents
 
-Two, so far:
+Three, so far:
 
 - **[`ENG-PRINCIPLES.md`](ENG-PRINCIPLES.md)** — how we build: strong typing with one source-of-truth language, CLI ergonomics and machine output, agent-native CLIs and services (discoverability, hierarchical relative commands, `whoami`, long polling, read cursors owned by named clients, defaults documented on every surface, one command set behind SSH/web/MCP, sign-in by approving a code over SSH, push-first upstreams), testing and executable Markdown harnesses, docs, and more.
 
 - **[`WEB-UI-PRINCIPLES.md`](WEB-UI-PRINCIPLES.md)** — UI, UX, and data doctrine for web applications, document-style local apps in particular: local-first, offline-first, CRDT-first; stability; direct interaction; progressive disclosure; visible-data integrity; data-derived rendering; flicker-free updates; bounded dynamic content; responsive window shapes; accessibility and browser verification.
+
+- **[`TUI-PRINCIPLES.md`](TUI-PRINCIPLES.md)** — a terminal board over the same catalog: every operation reached with the arrow keys and Enter, a known value chosen by its name, nothing drawn for an empty negative list, and an SSH session with a terminal and no command being that board.
 
 ## How to use them
 
